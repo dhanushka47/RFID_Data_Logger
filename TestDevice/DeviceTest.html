@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spryng Device Test</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-database.js"></script>
+    <link rel="stylesheet" type="text/css" href="DeviceTest.css">
+    <script src="DeviceTest.js"></script> 
+
+   
+</head>
+<body>
+    <div class="container">
+        <h1>Spryng Device Test</h1>
+        <form onsubmit="saveData(); return false;">
+
+            
+            <div class="grid-item">
+                <fieldset>
+                    <legend>UID</legend>
+                    <div class="form-row">
+                        <label for="uid">UID:</label>
+                        <input type="text" id="uid" name="uid" required>
+                        <button type="button" onclick="refreshUID()">Add UID</button>
+                        <span id="uidCount">(Fetching...)</span>
+                    </div>
+                    <br><br>
+                </fieldset>
+                
+            </div>
+
+            <div class="grid-container">
+                <div class="grid-item">
+                    <fieldset>
+                        <legend>Housing Remove:</legend>
+                        <input type="radio" id="housingRemoveYes" name="housingRemove" value="yes">
+                        <label for="housingRemoveYes">Yes</label>
+                        <input type="radio" id="housingRemoveNo" name="housingRemove" value="no">
+                        <label for="housingRemoveNo">No</label>
+                    </fieldset>
+                </div>
+
+                <div class="grid-item">
+                    <fieldset>
+                        <legend>Firmware Upload:</legend>
+                        <input type="radio" id="firmwareUploadYes" name="firmwareUpload" value="yes">
+                        <label for="firmwareUploadYes">Yes</label>
+                        <input type="radio" id="firmwareUploadNo" name="firmwareUpload" value="no">
+                        <label for="firmwareUploadNo">No</label>
+                    </fieldset>
+                </div>
+
+                <div class="grid-item">
+                    <fieldset>
+                        <legend>Heat Press:</legend>
+                        <input type="checkbox" id="heatPressPart1" name="heatPress" value="QR 1">
+                        <label for="heatPressPart1">QR 1</label><br>
+                        <input type="checkbox" id="heatPressPart2" name="heatPress" value="QR 2">
+                        <label for="heatPressPart2">QR 2 </label><br>
+                        <input type="checkbox" id="heatPressPart3" name="heatPress" value="Logo">
+                        <label for="heatPressPart3">Logo </label>
+                    </fieldset>
+                </div>
+
+                <div class="grid-item">
+                    <fieldset>
+                        <legend>Assemble Housing:</legend>
+                        <input type="radio" id="assembleHousingYes" name="assembleHousing" value="yes">
+                        <label for="assembleHousingYes">Yes</label>
+                        <input type="radio" id="assembleHousingNo" name="assembleHousing" value="no">
+                        <label for="assembleHousingNo">No</label>
+                    </fieldset>
+                </div>
+
+            
+
+                <div class="grid-item">
+                    <fieldset>
+                        <legend>Device Status:</legend>
+                        <input type="radio" id="devicePassYes" name="devicePass" value="Passed">
+                        <label for="devicePassYes">Passed</label>
+                        <input type="radio" id="devicePassNo" name="devicePass" value="Failed">
+                        <label for="devicePassNo">Failed</label>
+                    </fieldset>
+                </div>
+
+                <div class="grid-item" style="display: none;" id="damageField">
+                    <fieldset>
+                        <legend>Damage:</legend>
+                        <input type="radio" id="damageTotal" name="damage" value="Total">
+                        <label for="damageTotal">Total</label>
+                        <input type="radio" id="damageMinor" name="damage" value="Minor">
+                        <label for="damageMinor">Minor</label>
+                    </fieldset>
+                </div>
+                
+              
+
+
+                <div class="grid-item" style="grid-column: span 3;">
+                    <label for="specialNotes">Special Notes:</label><br>
+                    <textarea id="specialNotes" name="specialNotes" rows="4"></textarea>
+                </div>
+            </div>
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #131127;
+    margin: 0;
+    color: white;
+    padding: 0;
+}
+
+.container {
+    max-width: 960px;
+    margin: 20px auto;
+    background-color:#2f2e40;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+}
+
+nav h1 {
+    margin: 0;
+}
+
+main {
+    padding: 20px 0;
+}
+
+h2 {
+    color: #ffffff;
+}
+
+/* Filter section */
+.filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.filters .filter-item {
+    margin-bottom: 10px;
+}
+
+.filters label {
+    font-weight: bold;
+}
+
+.filters select,
+.filters input[type="date"] {
+    padding: 8px;
+    font-size: 14px;
+}
+
+.filters button {
+    padding: 8px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #7f8bf7;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+.filters button:hover {
+    background-color: #7f8bf7;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #807979;
+    font-weight: bold;
+}
+
+table tbody tr:hover {
+    background-color: #4b3f43;
+}
+
+/* Dark red cell styling */
+.no-cell {
+    background-color: rgb(240, 11, 11);
+    color: white;
+    font-weight: bold;
+}
+
+/* Export button */
+#btnExport {
+    
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #7f8bf7;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+   
+}
+
+#btnDelete {
+    
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #7f8bf7;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+   
+}
+
+#btnDeleteUID {
+    
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #7f8bf7;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+   
+}
+
+
+#btnDataLog {
+    
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #7f8bf7;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+   
+}
+
+/* Filter section */
+.filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Center align items vertically */
+    margin-bottom: 20px;
+}
+
+.filters .search {
+    display: flex;
+    align-items: center; /* Center align items vertically */
+}
+
+.filters .search label {
+    margin-right: 10px;
+}
+
+.filters input[type="text"],
+.filters input[type="date"],
+.filters button {
+    padding: 8px;
+    font-size: 14px;
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+.filters button {
+    flex-shrink: 0; /* Prevent button from shrinking */
+    min-width: 80px; /* Set minimum width for button */
+    margin-left: 10px; /* Add spacing between input and button */
+}

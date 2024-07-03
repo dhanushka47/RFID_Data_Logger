@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spryng Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="css/stylesviewdata.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/resizable-columns@1.0.4/dist/resizable-columns.css">
+    
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>Spryng Device Firmware Update</h1>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>Spryng Testing Data</h2>
+            
+            <!-- Filter Section -->
+            <section class="filters">
+            
+    <div class="search">
+        <label for="uidSearch">Search by UID:</label>
+        <input type="text" id="uidSearch" placeholder="Enter UID...">
+        <button onclick="searchByUID()">Search</button>
+    </div>
+
+    <!-- Filter by Date Range -->
+    <div class="date-filter">
+        <label for="startDate">Filter by Date Range:</label>
+        <input type="date" id="startDate">
+        <input type="date" id="endDate">
+        <button onclick="filterByDateRange()">Apply</button>
+    </div>
+
+            </section>
+
+
+            <section class="filters">
+                <div class="filter-item">
+                    <label for="devicePassedFilter">Filter by Device Passed:</label>
+                    <select id="devicePassedFilter" onchange="filterByDevicePassed()">
+                        <option value="">All</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button id="btnDataLog" onclick="testDevices()">Test Devices</button>
+                    <button id="btnExport" onclick="exportReportToExcel()">Export This Table</button>
+                    <button id="btnDeleteUID" onclick="deleteUIDraw()">Delete</button>
+                    <button id="btnDelete" onclick="deleteAllData()">Clear All Data</button>
+                </div>
+                
+                </section>
+
+            
+            <!-- RFID Data Table -->
+            <table id="rfidData" class="resizable">
+                <thead>
+                    <tr>
+                       
+                        <th style="min-width: 100px;">UID</th>
+                        <th style="min-width: 150px;">Date & Time</th>
+                        <th style="min-width: 70px;">Housing Remove</th>
+                        <th style="min-width: 70px;">Firmware Upload</th>
+                        <th style="min-width: 100px;">Heat Press</th>
+                        <th>Special Notes</th>
+                        <th style="min-width: 100px;">Device Status</th>
+                        <th style="min-width: 100px;">Damage Type</th>
+                    </tr>
+                </thead>
+                <tbody id="rfidDataBody">
+                    <!-- Data rows will be dynamically added here -->
+                </tbody>
+            </table>
+
+           
+           
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/resizable-columns@1.0.4/dist/resizable-columns.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script src="js/app.js"></script> <!-- Your custom JavaScript file -->
+
+    <script type="text/javascript">
+    // Initialize Firebase
+    var firebaseConfig = {
+        apiKey: "AIzaSyBGA1vUD96TPp0jz66JSJaPm560mn7nTrg",
+        authDomain: "rfid-data-log.firebaseapp.com",
+        databaseURL: "https://rfid-data-log-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "rfid-data-log",
+        storageBucket: "rfid-data-log.appspot.com",
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Reference to Firebase database
+    var database = firebase.database();
+
+    // Function to load initial 20 entries from TestData
+    function loadInitialData() {
+        database.ref('TestData').limitToLast(20).once('value')
+            .then(snapshot => {
+                displayRFIDData(snapshot);
+            })
+            .catch(error => {
+                console.error('Error loading initial data: ', error);
+            });
+    }
+
+ 
+    function displayRFIDData(snapshot) {
+    const rfidDataBody = document.getElementById('rfidDataBody');
+    rfidDataBody.innerHTML = ''; // Clear existing table rows
+
+    snapshot.forEach(childSnapshot => {
+        const data = childSnapshot.val();
+        const row = document.createElement('tr');
+
+        // Check if data exists
+        if (data) {
+            // Add data fields to table columns
+            row.innerHTML = `
+                <td>${data.uid || ''}</td>
+                <td>${data.dateTime || ''}</td>
+                <td>${data.housingRemove || ''}</td>
+                <td>${data.firmwareUpload || ''}</td>
+                <td>${data.heatPress ? data.heatPress.map(part => part === 'no' ? `<span class="no-cell">${part}</span>` : part).join(', ') : ''}</td>
+                <td>${data.specialNotes || ''}</td>
+                <td class="${data.devicePass === 'Failed' ? 'no-cell' : ''}">${data.devicePass || ''}</td>
+                <td>${data.damage || ''}</td>
+            `;
+        }
+
+        rfidDataBody.appendChild(row);
+    });
+}
+
+
+
+
+
+    // Function to filter data by UID
+    function searchByUID() {
+        const uid = document.getElementById('uidSearch').value.trim();
+        if (uid === '') {
+            loadInitialData();
+            return;
+        }
+
+        database.ref('TestData').orderByChild('uid').equalTo(uid).once('value')
+            .then(snapshot => {
+                displayRFIDData(snapshot);
+            })
+            .catch(error => {
+                console.error('Error searching by UID: ', error);
+            });
+    }
+
+    // Function to filter data by date range
+    function filterByDateRange() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert('Please select both start and end dates.');
+            return;
+        }
+
+        // Convert dates to timestamps for comparison
+        const startTimestamp = new Date(startDate).getTime();
+        const endTimestamp = new Date(endDate).getTime();
+
+        if (startTimestamp > endTimestamp) {
+            alert('End date must be greater than or equal to start date.');
+            return;
+        }
+
+        database.ref('TestData').orderByChild('timestamp').startAt(startTimestamp).endAt(endTimestamp).once('value')
+            .then(snapshot => {
+                displayRFIDData(snapshot);
+            })
+            .catch(error => {
+                console.error('Error filtering by date range: ', error);
+            });
+    }
+
+    // Function to filter data by Device Passed
+    function filterByDevicePassed() {
+        const devicePassed = document.getElementById('devicePassedFilter').value;
+        if (devicePassed === '') {
+            loadInitialData();
+            return;
+        }
+
+        database.ref('TestData').orderByChild('devicePass').equalTo(devicePassed).once('value')
+            .then(snapshot => {
+                displayRFIDData(snapshot);
+            })
+            .catch(error => {
+                console.error('Error filtering by device passed: ', error);
+            });
+    }
+
+    
+
+    // Function to export data to Excel
+    function exportReportToExcel() {
+        try {
+            // Select the table
+            let table = document.getElementById("rfidData");
+            if (!table) {
+                throw new Error("Table not found");
+            }
+
+            // Convert table to worksheet
+            let wb = XLSX.utils.table_to_book(table, {sheet: "Sheet 1"});
+
+            // Export the workbook to an Excel file
+            XLSX.writeFile(wb, 'Spryng_Device_test.xlsx');
+        } catch (error) {
+            console.error('Error exporting to Excel: ', error);
+            alert('Failed to export data to Excel. ' + error.message);
+        }
+    }
+
+    // Load initial data when the page loads
+    window.onload = function() {
+        loadInitialData();
+    };
+
+
+    function testDevices() {
+            // Open DeviceTest.html in a new window
+            window.open('TestDevice/DeviceTest.html', '_blank');
+        }
+
+
+
+
+    // jQuery Document Ready
+    $(document).ready(function() {
+        $('#rfidData').resizableColumns({
+            store: window.store
+        });
+    });
+
+
+
+
+    // Function to delete UID-related data child from Firebase
+function deleteUIDraw() {
+    // Get the UID from the search input field
+    const uid = document.getElementById('uidSearch').value.trim();
+    if (uid === '') {
+        alert('Please enter a UID to delete.');
+        return;
+    }
+
+    // Ask for confirmation
+    const confirmation = confirm(`Are you sure you want to delete the data for UID: ${uid}?`);
+    if (!confirmation) {
+        return; // Exit the function if the user cancels
+    }
+
+    // Find and delete the data related to the UID
+    database.ref('TestData').orderByChild('uid').equalTo(uid).once('value')
+        .then(snapshot => {
+            snapshot.forEach(childSnapshot => {
+                // Remove the child node from Firebase
+                childSnapshot.ref.remove()
+                    .then(() => {
+                        alert(`Data for UID: ${uid} has been deleted.`);
+                        // Optionally, reload the data to update the table
+                        document.getElementById('uidSearch').value = '';
+                        loadInitialData();
+                    })
+                    .catch(error => {
+                        console.error('Error deleting data: ', error);
+                        alert('Failed to delete data.');
+                    });
+            });
+        })
+        .catch(error => {
+            console.error('Error finding UID: ', error);
+            alert('Failed to find data for the given UID.');
+        });
+}
+
+
+    
+    </script>
+</body>
+</html>
