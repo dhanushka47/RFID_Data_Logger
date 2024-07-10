@@ -7,3 +7,5 @@ RFID with ESP device and we dashboard
 
 Schematic sheet 
 ![2024-07-02 00_58_06-schematic pdf and 1 more page - Profile 1 - Microsoft​ Edge](https://github.com/dhanushka47/RFID_Data_Logger/assets/99599915/abd36fcf-0c1b-4c33-8ee5-5c9b2be1fade)
+
+final product
